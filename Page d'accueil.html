@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Portefeuille Crypto</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">BTC Converter</a>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <!-- Tableau de bord principal -->
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="card bg-primary text-white mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Valeur Totale du Portefeuille</h5>
+            <h3 id="totalPortfolio">$50,000</h3>
+            <p id="portfolioChange">Gains : +10% cette semaine</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card bg-success text-white mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Dernières Transactions</h5>
+            <ul class="list-unstyled" id="latestTransactions">
+              <li>Achat de 1 BTC - $30,000</li>
+              <li>Vente de 5 ETH - $10,000</li>
+              <li>Transfert de 2 LTC - $200</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card bg-warning text-white mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Alerte de Prix</h5>
+            <p id="priceAlert">BTC a atteint $60,000</p>
+            <button id="setPriceAlert" class="btn btn-light mt-3">Définir une alerte de prix</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Détail du portefeuille -->
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>Détail du Portefeuille</h5>
+          </div>
+          <div class="card-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Crypto</th>
+                  <th>Quantité</th>
+                  <th>Valeur actuelle</th>
+                  <th>Pourcentage du portefeuille</th>
+                </tr>
+              </thead>
+              <tbody id="portfolioDetails">
+                <tr>
+                  <td>Bitcoin (BTC)</td>
+                  <td>1.5</td>
+                  <td>$45,000</td>
+                  <td>90%</td>
+                </tr>
+                <tr>
+                  <td>Ethereum (ETH)</td>
+                  <td>10</td>
+                  <td>$10,000</td>
+                  <td>20%</td>
+                </tr>
+                <tr>
+                  <td>Litecoin (LTC)</td>
+                  <td>50</td>
+                  <td>$5,000</td>
+                  <td>10%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Graphique de Performance -->
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>Graphique de Performance</h5>
+          </div>
+          <div class="card-body">
+            <canvas id="performanceChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Convertisseur de Crypto -->
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>Convertisseur de Crypto</h5>
+          </div>
+          <div class="card-body">
+            <form id="converterForm">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="cryptoAmount">Montant en Crypto</label>
+                    <input type="number" class="form-control" id="cryptoAmount" placeholder="Ex : 1.5 BTC">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="currencyAmount">Montant en Devise Fiat</label>
+                    <input type="number" class="form-control" id="currencyAmount" placeholder="Ex : 50000 USD">
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary mt-3">Convertir</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Custom JS -->
+  <script>
+    // Fonctionnalité du convertisseur de crypto
+    const converterForm = document.getElementById('converterForm');
+    converterForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const cryptoAmount = document.getElementById('cryptoAmount').value;
+      const currencyAmount = document.getElementById('currencyAmount').value;
+
+      const cryptoToFiatRate = 30000; // Exemple : 1 BTC = 30,000 USD
+
+      if (cryptoAmount) {
+        document.getElementById('currencyAmount').value = cryptoAmount * cryptoToFiatRate;
+      } else if (currencyAmount) {
+        document.getElementById('cryptoAmount').value = currencyAmount / cryptoToFiatRate;
+      }
+    });
+
+    // Alerte de prix
+    const setPriceAlertButton = document.getElementById('setPriceAlert');
+    setPriceAlertButton.addEventListener('click', function () {
+      const btcPrice = 60000; // Prix fictif
+      const userThreshold = prompt('Définissez un seuil de prix pour l\'alerte sur BTC :', 50000);
+      
+      if (userThreshold && btcPrice >= userThreshold) {
+        alert(`Alerte : Le prix de BTC a atteint ${btcPrice} USD.`);
+        document.getElementById('priceAlert').innerText = `BTC a atteint $${btcPrice}`;
+      } else {
+        alert('Le prix n\'a pas encore atteint ce seuil.');
+      }
+    });
+
+    // Graphique de performance (Exemple avec Chart.js)
+    var ctx = document.getElementById('performanceChart').getContext('2d');
+    var performanceChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Valeur du portefeuille',
+          data: [10000, 20000, 30000, 40000, 50000, 60000],
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      }
+    });
+  </script>
+</body>
+</html>
